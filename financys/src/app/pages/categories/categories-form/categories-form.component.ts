@@ -71,7 +71,6 @@ export class CategoriesFormComponent implements OnInit {
 
 
   submitForm(){
-    debugger
     this.submitttingForm = true;
 
     if(this.currentAction == 'new')
@@ -95,8 +94,8 @@ export class CategoriesFormComponent implements OnInit {
       error => this.actionForError(error)
     )
   }
-  private actionForError(error: any) {
-    toastr.console.error(('Ocorreu um erro ao processor a sua solicitação !'));
+  private actionForError(error) {
+    toastr.error(('Ocorreu um erro ao processor a sua solicitação !'));
     this.submitttingForm = false;
     if(error.status === 422 )
       this.serverErroMessages = JSON.parse(error._body).errors;
