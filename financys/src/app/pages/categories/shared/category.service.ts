@@ -5,7 +5,6 @@ import { Observable, throwError, observable } from 'rxjs';
 import { map, catchError, flatMap } from "rxjs/operators";
 
 import { Category } from "./category.model";
-import { create } from 'domain';
 
 
 
@@ -48,6 +47,15 @@ export class CategoryService {
     return this.http.put(url, category).pipe(
       catchError(this.handleError),
       map(() => category)
+    )
+  }
+
+
+  delete(id: number): Observable<boolean>{
+    const url = `${this.apiPath}/${id}`;
+    return this.http.delete(url).pipe(
+      catchError(this.handleError),
+      map(() => true)
     )
   }
   private jsonDataToCategory(jsonData: any): Category{
