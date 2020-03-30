@@ -1,36 +1,34 @@
-import { CategoryService } from './../shared/category.service';
 import { Component, OnInit } from '@angular/core';
 
 import { Category } from "../shared/category.model";
-
+import { CategoryService } from "../shared/category.service";
 
 @Component({
-  selector: 'app-categories-list',
+  selector: 'app-category-list',
   templateUrl: './categories-list.component.html',
   styleUrls: ['./categories-list.component.scss']
 })
 export class CategoriesListComponent implements OnInit {
 
-  categories: Category[] = []
+  categories: Category[] = [];
 
   constructor(private categoryService: CategoryService) { }
 
   ngOnInit() {
-
     this.categoryService.getAll().subscribe(
       categories => this.categories = categories,
-      error => alert('Erro ao carregar a lista')
+      error => alert('Erro ao carregar a lista de categorias')
     )
   }
 
-  deleteCategory(category){
+  deleteCategory(category) {
+    const mustDelete = confirm('Deseja realmente excluir este item?');
 
-    let mustDelete = confirm(` Deseja excluir a categoria ${category.name} ?`);
-    if(!mustDelete) return false;
-    this.categoryService.delete(category.id).subscribe(
-      () => this.categories = this.categories.filter(element => element != category),
-      () => alert('Erro ao tentar excluir a categoria.')
-    )
+    if (mustDelete){
+      this.categoryService.delete(category.id).subscribe(
+        () => this.categories = this.categories.filter(element => element != category),
+        () => alert("Erro ao tentar excluir!")
+      )
+    }
   }
-
 }

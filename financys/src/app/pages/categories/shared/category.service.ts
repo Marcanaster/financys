@@ -1,47 +1,45 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
-import { Observable, throwError, observable } from 'rxjs';
+import { Observable, throwError } from "rxjs";
 import { map, catchError, flatMap } from "rxjs/operators";
 
 import { Category } from "./category.model";
-
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoryService {
 
-  private apiPath: string = 'api/categories';
+  private apiPath: string = "api/categories";
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<Category[]>{
+
+  getAll(): Observable<Category[]> {
     return this.http.get(this.apiPath).pipe(
       catchError(this.handleError),
       map(this.jsonDataToCategories)
     )
   }
 
-  getById(id: number): Observable<Category>{
+  getById(id: number): Observable<Category> {
     const url = `${this.apiPath}/${id}`;
 
     return this.http.get(url).pipe(
       catchError(this.handleError),
-      map(this.jsonDataToCategory )
+      map(this.jsonDataToCategory)
     )
   }
 
-  create(category: Category): Observable<Category>{
-
+  create(category: Category): Observable<Category> {
     return this.http.post(this.apiPath, category).pipe(
       catchError(this.handleError),
-      map(this.jsonDataToCategory )
+      map(this.jsonDataToCategory)
     )
   }
 
-  update(category: Category): Observable<Category>{
+  update(category: Category): Observable<Category> {
     const url = `${this.apiPath}/${category.id}`;
 
     return this.http.put(url, category).pipe(
@@ -50,25 +48,31 @@ export class CategoryService {
     )
   }
 
-
-  delete(id: number): Observable<boolean>{
+  delete(id: number): Observable<any> {
     const url = `${this.apiPath}/${id}`;
+
     return this.http.delete(url).pipe(
       catchError(this.handleError),
-      map(() => true)
+      map(() => null)
     )
   }
-  private jsonDataToCategory(jsonData: any): Category{
-    return jsonData as Category;
+
+
+
+  // PRIVATE METHODS
+
+  private jsonDataToCategories(jsonData: any[]): Category[] {
+    const categories: Category[] = [];
+    jsonData.forEach(element => categories.push(element as Category));
+    return categories;
   }
-  private jsonDataToCategories(jsonData: any[]): Category[]{
-    const categorias: Category[] = [];
-    jsonData.forEach(element => categorias.push(element as Category));
-    return categorias;
+
+  private jsonDataToCategory(jsonData: any): Category {
+    return jsonData as Category;
   }
 
   private handleError(error: any): Observable<any>{
-    console.log('Erro na requisição =>', error);
+    console.log("ERRO NA REQUISIÇÃO => ", error);
     return throwError(error);
   }
 }
